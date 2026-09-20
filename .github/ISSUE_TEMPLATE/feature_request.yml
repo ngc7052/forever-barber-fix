@@ -1,0 +1,20 @@
+name: Idea
+description: Something the addon should do
+labels: [enhancement]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What would you like it to do
+      description: |
+        What you are trying to achieve, as much as the feature itself.
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        Worth knowing before you write: this addon exists to work around one
+        beta bug and is meant to be deleted once Blizzard fixes it. Other beta
+        UI errors are welcome as separate bug reports with their stack trace;
+        a general-purpose UI addon is not the goal.

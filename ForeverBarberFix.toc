@@ -1,0 +1,8 @@
+## Interface: 16001
+## Title: Forever Barber Fix
+## Notes: Makes the barber chair usable in the WoW: Forever beta by working around the Blizzard_CharacterCustomize "CharacterCreateFrame" nil error that leaves the Accept button disabled.
+## Version: 1.0.0
+## Author: ngc7052
+## X-Website: https://github.com/ngc7052/forever-barber-fix
+## X-License: MIT
+ForeverBarberFix.lua

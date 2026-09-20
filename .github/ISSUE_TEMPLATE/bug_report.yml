@@ -1,0 +1,56 @@
+name: Bug report
+description: The barber still errors, or the addon does something wrong
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for taking the time. The exact error text is what decides whether
+        a problem can be fixed, so please paste it even if it looks like the one
+        in the README.
+
+  - type: input
+    id: version
+    attributes:
+      label: Addon version
+      description: "`## Version:` in ForeverBarberFix.toc, or the release you unzipped."
+      placeholder: "1.0.0"
+    validations:
+      required: true
+
+  - type: input
+    id: build
+    attributes:
+      label: Game build
+      description: Bottom-left of the login screen, e.g. 1.60.1.69913.
+      placeholder: "1.60.1.69913"
+    validations:
+      required: true
+
+  - type: textarea
+    id: error
+    attributes:
+      label: Error text
+      description: |
+        The full Lua error with its stack, from BugSack / BugGrabber or from the
+        game's `Errors` folder. If there is no error, say so.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: |
+        What you did, what you saw, and what you expected instead. Did chat
+        print "ForeverBarberFix: barber shop patch applied"? What does
+        `/barberfix` say outside the chair?
+    validations:
+      required: true
+
+  - type: markdown
+    attributes:
+      value: |
+        **Usually not a bug:** a new addon folder is only picked up at the
+        character select screen, so a `/reload` after installing is not enough.

@@ -1,0 +1,8 @@
+# Nothing ships at runtime beyond two Lua files, but the actions are still a
+# supply chain.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: monthly

@@ -1,0 +1,79 @@
+name: Release
+
+# Publishes a release when the TOC names a version that has no tag yet. Merging
+# anything else — a README fix, a change without a version bump — runs this
+# workflow, finds the tag already exists, and stops. So the way to ship is:
+# bump "## Version:" in ForeverBarberFix.toc, add the CHANGELOG.md section,
+# merge, done.
+
+on:
+  push:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+jobs:
+  # Nothing is published unless the checks pass.
+  test:
+    uses: ./.github/workflows/ci.yml
+
+  release:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0        # tags decide whether this version is already out
+
+      - name: Resolve version
+        id: v
+        run: |
+          set -euo pipefail
+          VERSION=$(grep -oP '^## Version: \K[0-9]+\.[0-9]+\.[0-9]+$' ForeverBarberFix.toc)
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+          echo "tag=v$VERSION"    >> "$GITHUB_OUTPUT"
+          if git rev-parse -q --verify "refs/tags/v$VERSION" >/dev/null; then
+            echo "publish=false" >> "$GITHUB_OUTPUT"
+            echo "::notice::v$VERSION is already released — bump the TOC version to publish a new one"
+          else
+            echo "publish=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::v$VERSION has no tag yet — building a release"
+          fi
+
+      - name: Build
+        if: steps.v.outputs.publish == 'true'
+        run: tools/package.sh
+
+      - name: Release notes
+        if: steps.v.outputs.publish == 'true'
+        run: |
+          set -euo pipefail
+          # The section for this version, from its heading to the next one.
+          awk -v v="${{ steps.v.outputs.version }}" '
+            $0 == "## " v { on = 1; next }
+            /^## / && on  { exit }
+            on            { print }
+          ' CHANGELOG.md | sed -e '1{/^$/d}' > notes.md
+          if ! grep -q '[^[:space:]]' notes.md; then
+            echo "::error::no CHANGELOG.md section for ${{ steps.v.outputs.version }}" >&2
+            exit 1
+          fi
+          { echo "## Changes"; echo; cat notes.md; echo; echo "Unzip into \`Interface\\AddOns\`, then log out to character select and enable **Forever Barber Fix**."; } > notes.full.md
+
+      - name: Publish
+        if: steps.v.outputs.publish == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh release create "${{ steps.v.outputs.tag }}" \
+            dist/ForeverBarberFix-${{ steps.v.outputs.version }}.zip \
+            --target "$GITHUB_SHA" \
+            --title "ForeverBarberFix ${{ steps.v.outputs.version }}" \
+            --notes-file notes.full.md
