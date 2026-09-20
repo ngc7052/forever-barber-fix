@@ -9,6 +9,10 @@ get around it. This addon fixes the one broken line before the panel is shown.
 It is Blizzard's own "Barber Chairs cause a LUA error" from the beta
 known-issues list.
 
+**This is a stopgap.** Blizzard has the bug on its list, so a beta client
+patch will most likely fix it soon. When that happens this addon becomes
+redundant and can simply be deleted; leaving it installed does no harm.
+
 ## Install
 
 **[Download the latest release →](../../releases/latest)** and unzip it into
@@ -70,9 +74,49 @@ the replaced method cannot cause "action blocked" errors elsewhere.
 
 ## When to remove it
 
-When "Barber Chairs cause a LUA error" leaves Blizzard's known-issues list.
-Leaving it installed after that is harmless: the guard only changes behaviour
-where the game would have thrown.
+When "Barber Chairs cause a LUA error" leaves Blizzard's known-issues list, or
+when a patch note says the barber is fixed. Blizzard is working through the
+beta list quickly, so expect this addon to be redundant before long. Leaving it
+installed after that is harmless: the guard only changes behaviour where the
+game would have thrown, and once Blizzard's file no longer throws there is
+nothing left for it to do. If a later build errors in a *different* place,
+please [open an issue](../../issues/new/choose) with the stack trace.
+
+## Sources and discussion
+
+Where the bug is tracked and discussed:
+
+- [WoW Forever Beta Known Issues — September 18](https://us.forums.blizzard.com/en/wow/t/wow-forever-beta-known-issues-september-18/2352687)
+  (US forums, Blizzard) — "Barber Chairs cause a LUA error", present since the
+  September 17 list. [EU mirror](https://eu.forums.blizzard.com/en/wow/t/wow-forever-beta-known-issues-18-september/629369),
+  [blue-post archive](https://arctium.io/blue-posts/775).
+- [Barbershop in WoW Forever](https://us.forums.blizzard.com/en/wow/t/barbershop-in-wow-forever/2352776)
+  (US forums) — players hitting the error, and confirmation that appearance
+  changes do go through once submitted.
+- [Permanent LUA ERRORS](https://us.forums.blizzard.com/en/wow/t/permanent-lua-errors/2352561)
+  (US forums) — general beta Lua-error thread.
+- Known-issues coverage: [Wowhead](https://www.wowhead.com/forever/news/wow-forever-beta-known-issues-382980),
+  [Icy Veins](https://www.icy-veins.com/wow-forever/news/wow-forever-beta-known-issues-list-september-17th/),
+  [WOWF.IO](https://wowf.io/en/news/beta-known-issues).
+- [ClassicWoWCommunity/forever-bugs](https://github.com/ClassicWoWCommunity/forever-bugs)
+  — community bug tracker for the beta.
+
+The code the fix is based on, as published in the `forever` branch of
+Gethe/wow-ui-source:
+
+- [Blizzard_CharacterCustomize/Camelot/Blizzard_CharacterCustomize.lua](https://github.com/Gethe/wow-ui-source/blob/forever/Interface/AddOns/Blizzard_CharacterCustomize/Camelot/Blizzard_CharacterCustomize.lua)
+  — `UpdateSmallButtons` at line 450, the line that throws.
+- [Blizzard_BarbershopUI/Mainline/Blizzard_BarberShopUI.lua](https://github.com/Gethe/wow-ui-source/blob/forever/Interface/AddOns/Blizzard_BarbershopUI/Mainline/Blizzard_BarberShopUI.lua)
+  — the panel; `UpdateCharCustomizationFrame` never reaches `UpdateButtons`.
+- [Blizzard_BarbershopUI/Blizzard_BarberShopUI_Bootstrap.lua](https://github.com/Gethe/wow-ui-source/blob/forever/Interface/AddOns/Blizzard_BarbershopUI/Blizzard_BarberShopUI_Bootstrap.lua)
+  — `BarberShopFrame_LoadUI`, the function the addon hooks.
+- [Blizzard_CustomizationUI/Blizzard_CustomizationUI.lua](https://github.com/Gethe/wow-ui-source/blob/forever/Interface/AddOns/Blizzard_CustomizationUI/Blizzard_CustomizationUI.lua)
+  — the shared base: `SetCustomizations` → `SetSelectedCategory` → `UpdateCameraMode`.
+- [BarberShopDocumentation.lua](https://github.com/Gethe/wow-ui-source/blob/forever/Interface/AddOns/Blizzard_APIDocumentationGenerated/BarberShopDocumentation.lua)
+  and [Warcraft Wiki: C_BarberShop.ApplyCustomizationChoices](https://warcraft.wiki.gg/wiki/API_C_BarberShop.ApplyCustomizationChoices)
+  — none of the barber API is protected, which is why a plain addon can help.
+- [Interface 16001 for the Forever beta](https://github.com/McTalian-WoW-Addons/RPGLootFeed/pull/617)
+  — the TOC version number the client expects.
 
 ## Build a zip yourself
 
