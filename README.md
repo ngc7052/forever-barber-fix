@@ -2,6 +2,8 @@
 
 Makes the barber chair usable in the **World of Warcraft: Forever** beta.
 
+![Barber chair on the Forever beta with the Accept button enabled](docs/media/forever-barber-fix-6.jpg)
+
 Sit down on the beta today and you get a Lua error, the Accept and Reset
 buttons stay grey, and there is no way to confirm the haircut. The barber panel
 is full-screen and swallows the keyboard, so you cannot even type a `/run` to
@@ -15,7 +17,8 @@ redundant and can simply be deleted; leaving it installed does no harm.
 
 ## Install
 
-**[Download the latest release →](../../releases/latest)** and unzip it into
+**[Download the latest release →](../../releases/latest)**, or install it from
+[CurseForge](https://www.curseforge.com/wow/addons/forever-barber-fix), and unzip it into
 your Forever beta AddOns folder, so that you end up with
 
 ```

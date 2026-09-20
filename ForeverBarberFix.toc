@@ -5,4 +5,5 @@
 ## Author: ngc7052
 ## X-Website: https://github.com/ngc7052/forever-barber-fix
 ## X-License: MIT
+## X-Curse-Project-ID: 1703901
 ForeverBarberFix.lua
